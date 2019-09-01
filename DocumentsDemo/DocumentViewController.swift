@@ -1,11 +1,3 @@
-//
-//  DocumentViewController.swift
-//  DocumentsDemo
-//
-//  Created by Dariusz Rybicki on 01/09/2019.
-//  Copyright © 2019 Darrarski. All rights reserved.
-//
-
 import UIKit
 
 class DocumentViewController: UIViewController {
@@ -16,14 +8,11 @@ class DocumentViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Access the document
         document?.open(completionHandler: { (success) in
             if success {
-                // Display the content of the document, e.g.:
                 self.documentNameLabel.text = self.document?.fileURL.lastPathComponent
             } else {
-                // Make sure to handle the failed import appropriately, e.g., by presenting an error message to the user.
+                // TODO: present error message to the user
             }
         })
     }
