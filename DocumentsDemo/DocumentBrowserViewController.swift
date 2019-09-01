@@ -16,12 +16,24 @@ class DocumentBrowserViewController: UIDocumentBrowserViewController, UIDocument
         didRequestDocumentCreationWithHandler
         importHandler: @escaping (URL?, UIDocumentBrowserViewController.ImportMode) -> Void
     ) {
-        let newDocumentURL: URL? = nil
-        // TODO: create document with provided url
-        if newDocumentURL != nil {
-            importHandler(newDocumentURL, .move)
-        } else {
-            importHandler(nil, .none)
+        let newDocumentURL = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent("NewDocument")
+            .appendingPathExtension("demodoc")
+        let newDocument = Document(fileURL: newDocumentURL)
+        newDocument.save(to: newDocumentURL, for: .forCreating) { success in
+            guard success else {
+                print("Unable to save new document to: \(newDocumentURL)")
+                importHandler(nil, .none)
+                return
+            }
+            newDocument.close { success in
+                guard success else {
+                    print("Unable to close newly created document")
+                    importHandler(nil, .none)
+                    return
+                }
+                importHandler(newDocumentURL, .move)
+            }
         }
     }
     
